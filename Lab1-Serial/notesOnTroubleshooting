@@ -1,0 +1,4 @@
+To use the serial monitor for troubleshooting can use...
+uint8_t val = 34; //feedback for a specific case
+usb_send_msg("cB",'!', &val, sizeof(val)); //how to get an output message
+
