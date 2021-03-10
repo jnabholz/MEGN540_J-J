@@ -54,6 +54,20 @@ void Encoders_Init()
 
     _left_counts = 0;  // MEGN540 Lab 3 TODO
     _right_counts = 0;  // MEGN540 Lab 3 TODO
+    
+    /*Set ISC61 to 0 and ISC60 to 1 in EICRB so any logical change on INT6 will trigger an
+    ISR*/
+    EICRB|=(1<<ISC60);
+    EICRB&=(0<<ISC61);
+    
+    //Set EIMSK bit 6 equal to 1 to enable INT6
+    EIMSK|=(1<<INT6);
+    
+    //Set PCIE0 to 1 in PCICR so any logical change on PCINT4 will trigger an ISR
+    PCICR|=(1<<PCIE0);
+    
+    //Set PCINT4 to 1 in PCMSK0 to enable PCINT4
+    PCMSK0|=(1<<PCINT4);
 }
 
 
