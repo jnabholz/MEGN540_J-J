@@ -456,13 +456,38 @@ void Message_Handling_Task() {
             
         	}
         break;
+        case 'e':
+        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+        	if(usb_msg_length()>=MEGN540_Message_Len('e'))
+        	{
+        		//Remove the first USB character we received
+        		usb_msg_get();
+        	}
+        break;
+        case 'E':
+        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+        	if(usb_msg_length()>=MEGN540_Message_Len('E'))
+        	{
+        		//Remove the first USB character we received
+        		usb_msg_get();
+        	}
+        break;
         case 'b':
         	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
         	if(usb_msg_length()>=MEGN540_Message_Len('b'))
         	{
-        		
+        		//Remove the first USB character we received
+        		usb_msg_get();
         	}
 		break;
+		case 'B':
+			//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+        	if(usb_msg_length()>=MEGN540_Message_Len('B'))
+        	{
+        		//Remove the first USB character we received
+        		usb_msg_get();
+        	}
+        break;
         default:
             // What to do if you dont recognize the command character
             usb_msg_get();
