@@ -37,6 +37,7 @@
 
 #include "SerialIO.h"
 #include "Timing.h"
+#include "Filter.h"
 
 /** Message Driven State Machine Flags */
 typedef struct MSG_FLAG { bool active; float duration; Time_t last_trigger_time; } MSG_FLAG_t;

@@ -455,10 +455,14 @@ void Message_Handling_Task() {
             }
             
         	}
-}
-        	break;
-=======
->>>>>>> a8a5e8e23625205bd09ff45b2dd633a94716f1dc
+        break;
+        case 'b':
+        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+        	if(usb_msg_length()>=MEGN540_Message_Len('b'))
+        	{
+        		
+        	}
+		break;
         default:
             // What to do if you dont recognize the command character
             usb_msg_get();
@@ -505,6 +509,12 @@ uint8_t MEGN540_Message_Len(char cmd) {
         case 'E':
             return 5;
             break;
+        case 'b':
+        	return 1;
+        	break;
+        case 'B':
+        	return 5;
+        	break;
 //        case 'a': return	1; break;
 //        case 'A': return 	5; break;
 //        case 'w': return	1; break;

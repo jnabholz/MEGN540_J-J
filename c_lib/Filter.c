@@ -19,6 +19,22 @@
  */
 void  Filter_Init ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order )
 {
+    //Initialize the ring buffer in the filter p_filt
+    //Need to call those ring buffers correctly
+    rb_initialize_F(&(p_filt->numerator));
+    rb_initialize_F(&(p_filt->denominator));
+    rb_initialize_F(&(p_filt->in_list));
+    rb_initialize_F(&(p_filt->out_list));
+    
+    //Now that the ring buffers are initialized, we have to fill them with the
+    //correct values!
+    for(int i=0;i<(order+1);i++)
+    {
+        rb_push_back_F(&(p_filt->numerator),numerator_coeffs[i]);
+        rb_push_back_F(&(p_filt->denominator),denominator_coeffs[i]);
+        rb_push_front_F(&(p_filt->in_list),0);
+        rb_push_back_F(&(p_filt->out_list),0);
+    }
 	return;
 }
 
@@ -30,6 +46,12 @@ void  Filter_Init ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denom
  */
 void  Filter_ShiftBy( Filter_Data_t* p_filt, float shift_amount )
 {
+    //Increment each value in the in_list and out_list ring buffers by shift_amount
+    for(int i=0;i<rb_length_F(&(p_filt -> in_list));i++)
+    {
+        rb_set_F(&(p_filt -> in_list),i,rb_get_F(&(p_filt -> in_list),i)+shift_amount);
+        rb_set_F(&(p_filt -> out_list),i,rb_get_F(&(p_filt -> out_list),i)+shift_amount);
+    }
     return;
 }
 
@@ -41,6 +63,12 @@ void  Filter_ShiftBy( Filter_Data_t* p_filt, float shift_amount )
  */
 void Filter_SetTo( Filter_Data_t* p_filt, float amount )
 {
+    //Create a for loop and set each initial value
+    for(int i=0;i<rb_length_F(&(p_filt -> in_list));i++)
+    {
+        rb_set_F(&(p_filt -> in_list),i,amount);
+        rb_set_F(&(p_filt -> out_list),i,amount);
+    }
     return;
 }
 
@@ -52,7 +80,33 @@ void Filter_SetTo( Filter_Data_t* p_filt, float amount )
  */
 float Filter_Value( Filter_Data_t* p_filt, float value)
 {
-	return 0;
+    //Store the new input value in the input list
+    rb_push_front_F(&(p_filt -> in_list),value);
+    //Remove the rearmost value
+    rb_pop_back_F(&(p_filt -> in_list));
+    //Initialize a new float new_out
+    float new_out=0;
+    //Store the ring buffer length as an integer so we only call it once
+    int length=rb_length_F(&(p_filt -> in_list));
+    /*Sum the products of B_i and the corresponding input values and add them
+    to new_out*/
+    for(int i=0;i<length;i++)
+    {
+        new_out=new_out+rb_get_F(&(p_filt -> numerator),i)*rb_get_F(&(p_filt -> in_list),i);
+    }
+    /*Sum the products of A_i and the corresponding output values and subtract
+    them from new_out*/
+    for(int i=1;i<length;i++)
+    {
+        new_out=new_out-rb_get_F(&(p_filt -> denominator),i)*rb_get_F(&(p_filt -> out_list),i-1);
+    }
+    //Divide new_out by A_0 to get the filtered value
+    new_out=new_out/rb_get_F(&(p_filt -> denominator),0);
+    /*Store new_out in the output list, pop out the old output, and return the
+    new output*/
+    rb_push_front_F(&(p_filt -> out_list),new_out);
+    rb_pop_back_F(&(p_filt -> out_list));
+	return new_out;
 }
 
 /**
@@ -61,5 +115,8 @@ float Filter_Value( Filter_Data_t* p_filt, float value)
  */
 float Filter_Last_Output( Filter_Data_t* p_filt )
 {
-	return 0;
+    //Pop out the frontmost value in out_list, push it back in, and return it!
+    float value=rb_pop_front_F(&(p_filt->out_list));
+    rb_push_front_F(&(p_filt -> out_list),value);
+	return value;
 }
