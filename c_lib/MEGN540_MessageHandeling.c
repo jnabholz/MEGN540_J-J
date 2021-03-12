@@ -256,110 +256,109 @@ void Message_Handling_Task() {
             usb_msg_get();
             mf_restart.active = true;
             break;
-<<<<<<< HEAD
         //Lab 2 code
         case 't':
-        	{
-        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('t'))
-        	{
-        		//Get rid of that first usb character we received
-        		usb_msg_get();
-        		
-        		//Create a structure to hold the character
-        		struct __attribute__((__packed__)) {char choice;} data;
+            {
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('t'))
+            {
+                //Get rid of that first usb character we received
+                usb_msg_get();
+                
+                //Create a structure to hold the character
+                struct __attribute__((__packed__)) {char choice;} data;
                 
                 //Initialize ret_val as a float
                 float ret_val;
                 
                 //If the character is 0,
                 if(data.choice==0)
-                	{
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set the mf_send_time flag
-                	mf_send_time.active=true;
-                	
-                	//Set ret_val as the current time
-                	ret_val=GetTimeSec();
-                	usb_send_msg("cc",command,&ret_val,sizeof(ret_val));
-                	}
+                    {
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set the mf_send_time flag
+                    mf_send_time.active=true;
+                    
+                    //Set ret_val as the current time
+                    ret_val=GetTimeSec();
+                    usb_send_msg("cc",command,&ret_val,sizeof(ret_val));
+                    }
                 
                 //If the character is 1,
                 if(data.choice==1)
-                	{
-                	//Set the float flag
-                	mf_time_float_send.active=true;
-                	
-                	//Set a second float for comparison
-                	float ret_val2;
-                	
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set ret_val as the current time
-                	ret_val=GetTimeSec();
-                	
-                	//Send the time, a float (This seems weird, need to change)
-                	usb_send_msg("cc",command,&ret_val,sizeof(ret_val));
-                	
-                	//Set ret_val2 equal to the current time now
-                	ret_val2=GetTimeSec();
-                	
-                	//Set the difference as a float
-                	float diff=ret_val2-ret_val;
-                	
-                	//Send it
-                	usb_send_msg("cc",command,&diff,sizeof(diff));
-                	}
+                    {
+                    //Set the float flag
+                    mf_time_float_send.active=true;
+                    
+                    //Set a second float for comparison
+                    float ret_val2;
+                    
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set ret_val as the current time
+                    ret_val=GetTimeSec();
+                    
+                    //Send the time, a float (This seems weird, need to change)
+                    usb_send_msg("cc",command,&ret_val,sizeof(ret_val));
+                    
+                    //Set ret_val2 equal to the current time now
+                    ret_val2=GetTimeSec();
+                    
+                    //Set the difference as a float
+                    float diff=ret_val2-ret_val;
+                    
+                    //Send it
+                    usb_send_msg("cc",command,&diff,sizeof(diff));
+                    }
                 
                 //If the character is 2,
                 if(data.choice==2)
-                	{
-                	//Set the loop flag
-                	mf_loop_timer.active=true;
-                	
-                	//Set a second float for comparison
-                	float ret_val2;
-                	
-                	//Set ret_val as the current time
-                	ret_val=GetTimeSec();
-                	
-                	//Need to time how long it takes for the send buffer to clear out
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set ret_val2 equal to the current time now
-                	ret_val2=GetTimeSec();
-                	
-                	//Set the difference as a float
-                	float diff=ret_val2-ret_val;
-                	
-                	//Send it
-                	usb_send_msg("cc",command,&diff,sizeof(diff));
-                	}
-                	}
-        	}
-        	}
-        	break;
+                    {
+                    //Set the loop flag
+                    mf_loop_timer.active=true;
+                    
+                    //Set a second float for comparison
+                    float ret_val2;
+                    
+                    //Set ret_val as the current time
+                    ret_val=GetTimeSec();
+                    
+                    //Need to time how long it takes for the send buffer to clear out
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set ret_val2 equal to the current time now
+                    ret_val2=GetTimeSec();
+                    
+                    //Set the difference as a float
+                    float diff=ret_val2-ret_val;
+                    
+                    //Send it
+                    usb_send_msg("cc",command,&diff,sizeof(diff));
+                    }
+                    }
+            }
+            }
+            break;
         case 'T':
-        	{
-        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('T'))
-        	{
-        		//Get rid of that first USB character we received
-        		usb_msg_get();
-        		
-        		//Create structure data to hold the character and float
-        		struct __attribute__((__packed__)) {char choice; float ms;} data;
-        		
-        		//If the time ms is negative or zero,
-        		if(data.ms<=0)
-        		{
-        			//Get out of the loop
-        			break;
-        		}
+            {
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('T'))
+            {
+                //Get rid of that first USB character we received
+                usb_msg_get();
+                
+                //Create structure data to hold the character and float
+                struct __attribute__((__packed__)) {char choice; float ms;} data;
+                
+                //If the time ms is negative or zero,
+                if(data.ms<=0)
+                {
+                    //Get out of the loop
+                    break;
+                }
                 
                 //Initialize ret_val as a float
                 float ret_val;
@@ -367,126 +366,202 @@ void Message_Handling_Task() {
                 //If the character is 0,
                 if(data.choice==0)
                 {
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set the mf_send_time flag
-                	mf_send_time.active=true;
-                	
-                	//Set ret_val as the current time
-                	ret_val=GetTimeSec();
-                	usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set the mf_send_time flag
+                    mf_send_time.active=true;
+                    
+                    //Set ret_val as the current time
+                    ret_val=GetTimeSec();
+                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
                 }
                 
                 //If the character is 1,
                 if(data.choice==1)
                 {
-                	//Set the float flag
-                	mf_time_float_send.active=true;
-                	
-                	//Set a second float for comparison
-                	float ret_val2;
-                	
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set float ct as the current time
-                	float ct=GetTimeSec();
-                	
-                	//Send the time, a float (This seems weird, need to change)
-                	usb_send_msg("ccf",command,&ct,sizeof(ct));
-                	
-                	//Set float ct2 equal to the current time now
-                	float ct2=GetTimeSec();
-                	
-                	//Set the difference as ret_val
-                	ret_val=ct2-ct1;
-                	
-                	//Send it
-                	usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    //Set the float flag
+                    mf_time_float_send.active=true;
+                    
+                    //Set a second float for comparison
+                    float ret_val2;
+                    
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set float ct as the current time
+                    float ct=GetTimeSec();
+                    
+                    //Send the time, a float (This seems weird, need to change)
+                    usb_send_msg("ccf",command,&ct,sizeof(ct));
+                    
+                    //Set float ct2 equal to the current time now
+                    float ct2=GetTimeSec();
+                    
+                    //Set the difference as ret_val
+                    ret_val=ct2-ct1;
+                    
+                    //Send it
+                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
                 }
                 
                 //If the character is 2,
                 if(data.choice==2)
                 {
-                	//Set the loop flag
-                	mf_loop_timer.active=true;
-                	
-                	//Set a second float for comparison
-                	float ct2;
-                	
-                	//Set float ct as the current time
-                	float ct=GetTimeSec();
-                	
-                	//Need to time how long it takes for the send buffer to clear out
-                	// Copy the bytes from the usb receive buffer into our structure so we can use the information
-                	usb_msg_read_into( &data, sizeof(data) );
-                	
-                	//Set ct2 equal to the current time now
-                	ct2=GetTimeSec();
-                	
-                	//Set the difference as a float
-                	ret_val=ct2-ct1;
-                	
-                	//Send it
-                	usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    //Set the loop flag
+                    mf_loop_timer.active=true;
+                    
+                    //Set a second float for comparison
+                    float ct2;
+                    
+                    //Set float ct as the current time
+                    float ct=GetTimeSec();
+                    
+                    //Need to time how long it takes for the send buffer to clear out
+                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                    usb_msg_read_into( &data, sizeof(data) );
+                    
+                    //Set ct2 equal to the current time now
+                    ct2=GetTimeSec();
+                    
+                    //Set the difference as a float
+                    ret_val=ct2-ct1;
+                    
+                    //Send it
+                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
                 }
-            	/*Repeat the time ret_val every data.ms milliseconds
-            	Get the current time and set it as a benchmark*/
-            	Time_t benchmark_time=GetTime();
-            	
-            	/*Create a loop to continually check if data.ms milliseconds have passed
-            	since it last checked*/
-            	//I hate making an infinite loop like this, but I'm not sure how else to
-            	//do it
-            	while(0<1)
-            	{
-            		//Create a Time_t structure current_time to get the current time
-            		Time_t current_time=GetTime();
-            		
-            		//If the time elapsed since the benchmark time is cleanly divisible
-            		//by the millisecond time in data,
-            		if((current_time-benchmark_time)%data.ms==0)
-            		{
-            			//Send the time again
-            			usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
-            		}
-            	}
+                /*Repeat the time ret_val every data.ms milliseconds
+                Get the current time and set it as a benchmark*/
+                Time_t benchmark_time=GetTime();
+                
+                /*Create a loop to continually check if data.ms milliseconds have passed
+                since it last checked*/
+                //I hate making an infinite loop like this, but I'm not sure how else to
+                //do it
+                while(0<1)
+                {
+                    //Create a Time_t structure current_time to get the current time
+                    Time_t current_time=GetTime();
+                    
+                    //If the time elapsed since the benchmark time is cleanly divisible
+                    //by the millisecond time in data,
+                    if((current_time-benchmark_time)%data.ms==0)
+                    {
+                        //Send the time again
+                        usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    }
+                }
             }
             
-        	}
+            }
         break;
         case 'e':
-        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('e'))
-        	{
-        		//Remove the first USB character we received
-        		usb_msg_get();
-        	}
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('e'))
+            {
+               //Remove the first USB character we received
+               usb_msg_get();
+            //Create a structure to store the encoder counts
+            struct (float left;float right;) e_counts;
+            //Store those encoder counts
+            ret_val=struct e_counts;
+            ret_val.left=Counts_Left();
+            ret_val.right=Counts_Right();
+            //Send those encoder counts
+            usb_send_msg(“cff”,command,&ret_val,sizeof(ret_val));
+            }
         break;
         case 'E':
-        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('E'))
-        	{
-        		//Remove the first USB character we received
-        		usb_msg_get();
-        	}
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('E'))
+            {
+               //Remove the first USB character we received
+               usb_msg_get();
+            //Create structure data to hold the character and float
+               struct __attribute__((__packed__)) {char choice; float ms;} data;
+            //If the time ms is negative or zero,
+               if(data.ms<=0)
+               {
+                    //Get out of the loop
+                    break;
+               }
+            //Create a structure to store the encoder counts
+            struct (float left;float right;) e_counts;
+            //Store those encoder counts
+            ret_val=struct e_counts;
+            //Store those encoder counts
+            ret_val=struct e_counts;
+            ret_val.left=Counts_Left();
+            ret_val.right=Counts_Right();
+            /*Repeat the time ret_val every data.ms milliseconds
+Get the current time and set it as a benchmark*/
+Time_t benchmark_time=GetTime();
+/*Create a loop to continually check if data.ms milliseconds have passed
+since it last checked*/
+while(0<1)
+{
+//Create a Time_t structure current_time to get the current time
+Time_t current_time=GetTime();
+//If the time elapsed since the benchmark time is cleanly divisible
+//by the millisecond time in data,
+if((current_time-benchmark_time)%data.ms==0)
+{
+//Send the time again
+usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+           }
+}
+            }
         break;
         case 'b':
-        	//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('b'))
-        	{
-        		//Remove the first USB character we received
-        		usb_msg_get();
-        	}
-		break;
-		case 'B':
-			//If the length allotted in the buffer is greater than or equal to the necessary length, go forth
-        	if(usb_msg_length()>=MEGN540_Message_Len('B'))
-        	{
-        		//Remove the first USB character we received
-        		usb_msg_get();
-        	}
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('b'))
+            {
+                //Remove the first USB character we received
+                usb_msg_get();
+
+            float ret_val = Battery_Voltage();
+usb_send_msg(“cf”,command,&ret_val,sizeof(ret_val));
+
+
+            
+            }
+        break;
+        case 'B':
+            //If the length allotted in the buffer is greater than or equal to the necessary length, go forth
+            if(usb_msg_length()>=MEGN540_Message_Len('B'))
+            {
+                //Remove the first USB character we received
+                usb_msg_get();
+//Remove the first USB character we received
+               usb_msg_get();
+            //Create structure data to hold the character and float
+               struct __attribute__((__packed__)) {char choice; float ms;} data;
+            //If the time ms is negative or zero,
+               if(data.ms<=0)
+               {
+                    //Get out of the loop
+                    break;
+               }
+                                    
+float ret_val = Battery_Voltage();
+        /*Repeat the time ret_val every data.ms milliseconds
+Get the current time and set it as a benchmark*/
+Time_t benchmark_time=GetTime();
+/*Create a loop to continually check if data.ms milliseconds have passed
+since it last checked*/
+while(0<1)
+{
+//Create a Time_t structure current_time to get the current time
+Time_t current_time=GetTime();
+//If the time elapsed since the benchmark time is cleanly divisible
+//by the millisecond time in data,
+if((current_time-benchmark_time)%data.ms==0)
+{
+//Send the time again
+usb_send_msg("cf",command,&ret_val,sizeof(ret_val));
+           }
+}
+            }
         break;
         default:
             // What to do if you dont recognize the command character
@@ -535,17 +610,17 @@ uint8_t MEGN540_Message_Len(char cmd) {
             return 5;
             break;
         case 'b':
-        	return 1;
-        	break;
+            return 1;
+            break;
         case 'B':
-        	return 5;
-        	break;
-//        case 'a': return	1; break;
-//        case 'A': return 	5; break;
-//        case 'w': return	1; break;
-//        case 'W': return 	5; break;
-//        case 'm': return	1; break;
-//        case 'M': return	5; break;
+            return 5;
+            break;
+//        case 'a': return    1; break;
+//        case 'A': return     5; break;
+//        case 'w': return    1; break;
+//        case 'W': return     5; break;
+//        case 'm': return    1; break;
+//        case 'M': return    5; break;
         case 'p':
             return 5;
             break;
