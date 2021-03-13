@@ -351,108 +351,52 @@ void Message_Handling_Task() {
                 usb_msg_get();
                 
                 //Create structure data to hold the character and float
-                struct __attribute__((__packed__)) {char choice; float ms;} data;
+                struct __attribute__((__packed__)) {uint8_t choice; float rate;} data;
                 
-                //If the time ms is negative or zero,
-                if(data.ms<=0)
-                {
-                    //Get out of the loop
-                    break;
-                }
+                /*Copy the bytes from the USB receive buffer into our structure so we can
+                use the information*/
+                usb_msg_read_into(&data,sizeof(data));
                 
-                //Initialize ret_val as a float
-                float ret_val;
-                
-                //If the character is 0,
+                //Set up the different cases for what choice can be
+                //Case 1: choice is 0, return the current time
                 if(data.choice==0)
                 {
-                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
-                    usb_msg_read_into( &data, sizeof(data) );
-                    
-                    //Set the mf_send_time flag
+                    /*Set the flags so the current time is sent during the next flag
+                    execution*/
                     mf_send_time.active=true;
-                    
-                    //Set ret_val as the current time
-                    ret_val=GetTimeSec();
-                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    mf_send_time.last_trigger_time=GetTime();
+                    mf_send_time.duration=data.rate;
                 }
                 
-                //If the character is 1,
+                //Case 2: choice is 1, return the time it takes to send a float
                 if(data.choice==1)
                 {
-                    //Set the float flag
+                    /*Set the flags so the time to send a float is send during the next
+                    flag execution*/
                     mf_time_float_send.active=true;
-                    
-                    //Set a second float for comparison
-                    float ret_val2;
-                    
-                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
-                    usb_msg_read_into( &data, sizeof(data) );
-                    
-                    //Set float ct as the current time
-                    float ct=GetTimeSec();
-                    
-                    //Send the time, a float (This seems weird, need to change)
-                    usb_send_msg("ccf",command,&ct,sizeof(ct));
-                    
-                    //Set float ct2 equal to the current time now
-                    float ct2=GetTimeSec();
-                    
-                    //Set the difference as ret_val
-                    ret_val=ct2-ct1;
-                    
-                    //Send it
-                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    mf_time_float_send.last_trigger_time=Get_Time();
+                    mf_time_float_send.duration=data.rate;
                 }
                 
-                //If the character is 2,
+                /*Case 3: choice is 2, return the time it takes to complete a full loop
+                iteration*/
                 if(data.choice==2)
                 {
-                    //Set the loop flag
+                    /*Set the flag so the time to complete a full loop iteration is sent
+                    during the next flag execution*/
                     mf_loop_timer.active=true;
-                    
-                    //Set a second float for comparison
-                    float ct2;
-                    
-                    //Set float ct as the current time
-                    float ct=GetTimeSec();
-                    
-                    //Need to time how long it takes for the send buffer to clear out
-                    // Copy the bytes from the usb receive buffer into our structure so we can use the information
-                    usb_msg_read_into( &data, sizeof(data) );
-                    
-                    //Set ct2 equal to the current time now
-                    ct2=GetTimeSec();
-                    
-                    //Set the difference as a float
-                    ret_val=ct2-ct1;
-                    
-                    //Send it
-                    usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
+                    mf_loop_timer.last_trigger_time=GetTime();
+                    mf_loop_timer.duration=data.rate;
                 }
-                /*Repeat the time ret_val every data.ms milliseconds
-                Get the current time and set it as a benchmark*/
-                Time_t benchmark_time=GetTime();
-                
-                /*Create a loop to continually check if data.ms milliseconds have passed
-                since it last checked*/
-                //I hate making an infinite loop like this, but I'm not sure how else to
-                //do it
-                while(0<1)
+                /*Case 4: choice is 3, reset all of the timers*/
+                if(data.choice==3)
                 {
-                    //Create a Time_t structure current_time to get the current time
-                    Time_t current_time=GetTime();
-                    
-                    //If the time elapsed since the benchmark time is cleanly divisible
-                    //by the millisecond time in data,
-                    if((current_time-benchmark_time)%data.ms==0)
-                    {
-                        //Send the time again
-                        usb_send_msg("ccf",command,&ret_val,sizeof(ret_val));
-                    }
+                	//Deactivate all of the timers
+                	mf_send_time.active=false;
+                	mf_time_float_send.active=false;
+                	mf_loop_timer.active=false;
                 }
-            }
-            
+            }    
             }
         break;
         case 'e':
